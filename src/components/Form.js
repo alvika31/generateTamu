@@ -13,24 +13,6 @@ import { IconSquareRoundedX, IconTrash, IconSend, IconBrandWhatsapp } from '@tab
     const [popup, setPopup] = useState(false)
     const [selectedData, setSelectedData] = useState(null)
     const [no, setNo] = useState("")
-
-//     const [pesan, setPesan] = useState(`
-//     Kepada Saudara/i,
-
-// Kami dengan bahagia ingin mengundang Saudara/i untuk menghadiri pernikahan kami yang akan diselenggarakan secara daring melalui website pernikahan kami pada:
-
-// Tanggal: [tanggal pernikahan]
-
-// Kami telah membuat website pernikahan untuk memudahkan Anda mendapatkan informasi tentang acara kami, termasuk detail acara, peta lokasi, dan juga galeri foto. Kami juga menyediakan formulir RSVP untuk memudahkan Anda mengonfirmasi kehadiran Anda di hari spesial kami.
-
-// Silakan kunjungi [nama website] untuk mengakses semua informasi pernikahan kami dan melihat galeri foto kami.
-
-// Terima kasih atas perhatian dan kehadiran virtual Saudara/i. Kami sangat berharap untuk bertemu dengan Anda di hari pernikahan kami, baik secara daring maupun secara fisik.
-
-// Salam hangat,
-
-// [ Nama pasangan pengantin]
-//     `)
     const [whatsapp, setWhatsapp] = useState([])
 
    
@@ -51,22 +33,37 @@ import { IconSquareRoundedX, IconTrash, IconSend, IconBrandWhatsapp } from '@tab
         }
    }
 
+   function gantiPlusDenganPercent2B(teks) {
+    var hasil = "";
+    for (var i = 0; i < teks.length; i++) {
+      if (teks[i] === "+") {
+        hasil += "%2B";
+      } else {
+        hasil += teks[i];
+      }
+    }
+    return hasil;
+  }
+
    const prosesKirim = (event) =>{
         event.preventDefault();
         setNo('')
-        let name = document.getElementById('linkFix').value;
-        // let plus = pesan.replace(/ /g, "%20")
-        const cekHasil = hasil.map(data => {
-            return data.link;
-        })
+        let linkUser = document.getElementById('linkFix').value;
+        let linkName = document.getElementById('linkName').value;
+   
+        // const cekHasil = hasil.map(data => {
+        //     return data.link;
+        // })
         whatsapp.push({
             id: whatsapp.length + 1,
-            linkKirim: `https://wa.me/${no}?text=Hallo:${tamu}, ${name}`,
+            linkKirim: `https://wa.me/${no}?text=Hallo ${linkName}, berikut link undangan pernikahan kami: ${linkUser}`,
             tamu:tamu
         })
         setTimeout(() => {
             whatsapp.map(data => {
-                return window.open(data.linkKirim, '_blank'); 
+                let url = gantiPlusDenganPercent2B(data.linkKirim)
+    
+                return window.open(url, '_blank'); 
                 
             }, 1000)
             setWhatsapp([])
@@ -96,6 +93,7 @@ import { IconSquareRoundedX, IconTrash, IconSend, IconBrandWhatsapp } from '@tab
        
         
     }
+
 
     const stylebackground = {
         backgroundImage: `url(${wedding})`,
@@ -172,6 +170,10 @@ import { IconSquareRoundedX, IconTrash, IconSend, IconBrandWhatsapp } from '@tab
                         <div className='mb-5'>
                             <h1 className='font-medium text-black text-lg'>Link Undangan:</h1>
                             <input value={selectedData.link} id="linkFix" className='w-full bg-gray-100 cursor-not-allowed ring-1 text-gray-700 rounded-md py-1 px-2 ring-gray-200 focus:outline-0 text-md mt-2' readOnly></input>
+                        </div>
+                        <div className='mb-5'>
+                            <h1 className='font-medium text-black text-lg hidden'>Nama Tamu:</h1>
+                            <input value={selectedData.tamu} id="linkName" className='hidden w-full bg-gray-100 cursor-not-allowed ring-1 text-gray-700 rounded-md py-1 px-2 ring-gray-200 focus:outline-0 text-md mt-2' readOnly></input>
                         </div>
                         </>
                     )
