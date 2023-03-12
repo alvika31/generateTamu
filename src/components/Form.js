@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { Transition } from '@headlessui/react'
 import wedding from '../wedding.jpg';
 import muslim from '../muslim.png'
@@ -13,9 +13,27 @@ import { IconSquareRoundedX, IconTrash, IconSend, IconBrandWhatsapp } from '@tab
     const [popup, setPopup] = useState(false)
     const [selectedData, setSelectedData] = useState(null)
     const [no, setNo] = useState("")
-    const [pesan, setPesan] = useState("")
+
+//     const [pesan, setPesan] = useState(`
+//     Kepada Saudara/i,
+
+// Kami dengan bahagia ingin mengundang Saudara/i untuk menghadiri pernikahan kami yang akan diselenggarakan secara daring melalui website pernikahan kami pada:
+
+// Tanggal: [tanggal pernikahan]
+
+// Kami telah membuat website pernikahan untuk memudahkan Anda mendapatkan informasi tentang acara kami, termasuk detail acara, peta lokasi, dan juga galeri foto. Kami juga menyediakan formulir RSVP untuk memudahkan Anda mengonfirmasi kehadiran Anda di hari spesial kami.
+
+// Silakan kunjungi [nama website] untuk mengakses semua informasi pernikahan kami dan melihat galeri foto kami.
+
+// Terima kasih atas perhatian dan kehadiran virtual Saudara/i. Kami sangat berharap untuk bertemu dengan Anda di hari pernikahan kami, baik secara daring maupun secara fisik.
+
+// Salam hangat,
+
+// [ Nama pasangan pengantin]
+//     `)
     const [whatsapp, setWhatsapp] = useState([])
 
+   
    const deleteById = id => {
     setHasil(oldValues => {
         return oldValues.filter(hasils => hasils !== id)
@@ -27,27 +45,36 @@ import { IconSquareRoundedX, IconTrash, IconSend, IconBrandWhatsapp } from '@tab
         if (selected) {
             setSelectedData(selected);
             setPopup(true);
+           
         } else {
            return;
         }
    }
-   console.log(hasil)
 
    const prosesKirim = (event) =>{
         event.preventDefault();
         setNo('')
-        let plus = pesan.replace(/ /g, "%20")
+        let name = document.getElementById('linkFix').value;
+        // let plus = pesan.replace(/ /g, "%20")
+        const cekHasil = hasil.map(data => {
+            return data.link;
+        })
         whatsapp.push({
             id: whatsapp.length + 1,
-            linkKirim: `https://wa.me/${no}?text=${plus}`
+            linkKirim: `https://wa.me/${no}?text=Hallo:${tamu}, ${name}`,
+            tamu:tamu
         })
         setTimeout(() => {
             whatsapp.map(data => {
                 return window.open(data.linkKirim, '_blank'); 
+                
             }, 1000)
+            setWhatsapp([])
+
         })
-       
+        
    }
+  
     const handlesubmit = (event) => {
         event.preventDefault();
         if(tamu === ''){
@@ -66,7 +93,7 @@ import { IconSquareRoundedX, IconTrash, IconSend, IconBrandWhatsapp } from '@tab
             link: `${link}?to=${plus}`,
             tamu: tamu
         })
-
+       
         
     }
 
@@ -110,8 +137,8 @@ import { IconSquareRoundedX, IconTrash, IconSend, IconBrandWhatsapp } from '@tab
                             <a href={tamus.link}>
                             
                             <li className='text-slate-600 my-2' key={tamus.id}>{tamus.id}. {tamus.link}</li></a>
-                        <button onClick={() => deleteById(tamus)} className='bg-red-500 text-white rounded-md px-2 py-1'><IconTrash width="20px" height="20px"/></button>
-                        <button onClick={() => detailLink(tamus.id)} className='bg-green-500 text-white rounded-md px-2 py-1'><IconSend width="20px" height="20px"/></button>
+                        <button onClick={() => deleteById(tamus)} className='transition ease-in-out delay-150 bg-red-200 text-red-700 hover:bg-red-700 hover:text-white rounded-md px-2 py-1'><IconTrash width="20px" height="20px"/></button>
+                        <button onClick={() => detailLink(tamus.id)} className='transition ease-in-out delay-150 bg-blue-200 text-blue-700 hover:bg-blue-700 hover:text-white rounded-md px-2 py-1'><IconSend width="20px" height="20px"/></button>
                         </div>
                 
                   </>
@@ -144,7 +171,7 @@ import { IconSquareRoundedX, IconTrash, IconSend, IconBrandWhatsapp } from '@tab
                         <h1 className='font-bold text-2xl text-center mb-5'>Kirim Undangan Lewat Whatsapp</h1>
                         <div className='mb-5'>
                             <h1 className='font-medium text-black text-lg'>Link Undangan:</h1>
-                            <input value={selectedData.link} className='w-full ring-1 text-gray-700 rounded-md focus:bg-blue-50 focus:ring-blue-500 py-1 px-2 ring-gray-200 focus:outline-0 text-md mt-2' readOnly></input>
+                            <input value={selectedData.link} id="linkFix" className='w-full bg-gray-100 cursor-not-allowed ring-1 text-gray-700 rounded-md py-1 px-2 ring-gray-200 focus:outline-0 text-md mt-2' readOnly></input>
                         </div>
                         </>
                     )
@@ -155,7 +182,7 @@ import { IconSquareRoundedX, IconTrash, IconSend, IconBrandWhatsapp } from '@tab
                             <label className='text-slate-600 mb-2'>Note: Harap Gunakan Kode Negara Dan Tidak Pakai Spasi. Contoh: (628979382175)</label>
                             <input   type='text' value={no} onChange={(e) => setNo(e.target.value)} className='w-full ring-1 text-gray-700 rounded-md focus:bg-blue-50 focus:ring-blue-500 py-1 px-2 ring-gray-200 focus:outline-0 text-md mt-2'/>
                         </div>
-                        <label className='font-medium text-black text-lg mb-5'>Pilih Template Pesan:</label>
+                        {/* <label className='font-medium text-black text-lg mb-5'>Pilih Template Pesan:</label>
                         <div className='flex items-center-justify-center gap-x-3 mt-4 mb-4'>
                             <div className='w-1/3 bg-white rounded-md drop-shadow-xl'>
                                 <img src={muslim} className="w-20 mx-auto p-2" alt="" />
@@ -167,7 +194,7 @@ import { IconSquareRoundedX, IconTrash, IconSend, IconBrandWhatsapp } from '@tab
                                 <img src={buddha} className="w-20 mx-auto  p-2" alt="" />
                             </div>
 
-                        </div>
+                        </div> */}
                         {/* <textarea value={pesan} onChange={(e) => setPesan(e.target.value)} defaultValue="" className='w-full ring-1 text-gray-700 rounded-md focus:bg-blue-50 focus:ring-blue-500 py-1 px-2 ring-gray-200 focus:outline-0 text-md mt-2 mb-5 h-64'>
                         </textarea> */}
                         <button onClick={prosesKirim} className='flex flex-inline gap-x-3 px-4 py-2 transition ease-in-out delay-150 hover:-translate-y-1 px-1 hover:bg-green-700 hover:text-white py-2 rounded-md bg-green-200 text-green-700 w-60'><IconBrandWhatsapp />Kirim Pesan Whatsapp</button>
